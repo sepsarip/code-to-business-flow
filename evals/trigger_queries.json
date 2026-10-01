@@ -1,0 +1,102 @@
+[
+  {
+    "query": "I just joined the team and received a Laravel repo at ~/work/hris-api with no documentation. Can you explain what the application does and its flow from submission to completion?",
+    "should_trigger": true,
+    "split": "train"
+  },
+  {
+    "query": "my boss wants a process diagram of how orders get from checkout to shipped in /srv/shop. can you work it out from the code?",
+    "should_trigger": true,
+    "split": "train"
+  },
+  {
+    "query": "Create a business flow document for this attendance app to hand over to a BA, easy for non-technical readers",
+    "should_trigger": true,
+    "split": "train"
+  },
+  {
+    "query": "We're inheriting a legacy Rails app. Before we rewrite it I need to know what business rules it actually enforces: approval limits, refunds, who can do what.",
+    "should_trigger": true,
+    "split": "train"
+  },
+  {
+    "query": "Please trace the checkout code in this repo and diagram its status flow from pending to refunded",
+    "should_trigger": true,
+    "split": "train"
+  },
+  {
+    "query": "I need a requirements doc reverse-engineered from this codebase for the audit team",
+    "should_trigger": true,
+    "split": "train"
+  },
+  {
+    "query": "Explain how the reimbursement feature works end to end in this project, including background jobs",
+    "should_trigger": true,
+    "split": "validation"
+  },
+  {
+    "query": "can you map the user journeys in this Next.js app (apps/portal) and tell me which steps are only enforced in the frontend?",
+    "should_trigger": true,
+    "split": "validation"
+  },
+  {
+    "query": "Build a user flow and state diagram from this payment module code, then provide an HTML version",
+    "should_trigger": true,
+    "split": "validation"
+  },
+  {
+    "query": "what does this app do? I have no spec, just the repo at ./billing-service",
+    "should_trigger": true,
+    "split": "validation"
+  },
+  {
+    "query": "review PR #42, I think the approval controller has a bug",
+    "should_trigger": false,
+    "split": "train"
+  },
+  {
+    "query": "generate OpenAPI docs for all the routes in this Express app",
+    "should_trigger": false,
+    "split": "train"
+  },
+  {
+    "query": "I want to build a tiered approval feature in Laravel, help me design the database tables and controller",
+    "should_trigger": false,
+    "split": "train"
+  },
+  {
+    "query": "fix the 500 error when submitting a leave request",
+    "should_trigger": false,
+    "split": "train"
+  },
+  {
+    "query": "Generate an ERD diagram from the database schema in this schema.sql file",
+    "should_trigger": false,
+    "split": "train"
+  },
+  {
+    "query": "write unit tests for the payroll calculation function in src/payroll.ts",
+    "should_trigger": false,
+    "split": "train"
+  },
+  {
+    "query": "convert this BPMN diagram of our onboarding process into a PowerPoint",
+    "should_trigger": false,
+    "split": "validation"
+  },
+  {
+    "query": "summarize this README for me",
+    "should_trigger": false,
+    "split": "validation"
+  },
+  {
+    "query": "refactor the order service to use the repository pattern",
+    "should_trigger": false,
+    "split": "validation"
+  },
+  {
+    "query": "explain what this regex does: ^(?:BR-)\\d+$",
+    "should_trigger": false,
+    "split": "validation"
+  }
+]

@@ -1,0 +1,51 @@
+{
+  "skill_name": "code-to-business-flow",
+  "note": "Assertions were drafted after one manual pass on evals/files/leave-app (see evals/files/leave-app.report.md). Run each prompt with and without the skill, then prune assertions that pass in both.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I just joined the team, the repository is at evals/files/leave-app and has no documentation at all. Can you explain the business flow so I can share it with a non-technical PM?",
+      "expected_output": "English report.md and report.html: summary tab with one journey diagram, one section per flow with diagram and rules table, technical detail tab with coverage and open questions.",
+      "files": [
+        "evals/files/leave-app"
+      ],
+      "assertions": [
+        "scripts/validate_report.py exits 0 on the produced report.md",
+        "The report is written in English",
+        "The report states that leave longer than 3 days needs HR approval and cites policies.py",
+        "The report includes the scheduled escalation job as a flow with no user trigger",
+        "The report includes a state diagram with Draft, Submitted, Escalated, Approved and Rejected",
+        "The report has at least one [UNKNOWN] item about deduct_balance or the leave balance",
+        "No secret value from the .env file appears anywhere in the output"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Document how a leave request goes from draft to approved in evals/files/leave-app, including anything that happens without a user clicking a button.",
+      "expected_output": "English report covering the submit and decide flows and the automatic escalation, with code references.",
+      "files": [
+        "evals/files/leave-app"
+      ],
+      "assertions": [
+        "The report mentions the 5 day escalation threshold with a reference to jobs.py",
+        "The report says that the job schedule is not defined in the code read, or tags the daily schedule as INFERRED",
+        "Every [FACT] line has a path:line reference that resolves in the repo",
+        "The report distinguishes the manager-only decision from the HR decision for long leave"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "What are the business rules around leave balance in evals/files/leave-app? I only care about that part, not the whole app.",
+      "expected_output": "A narrower report (or one clearly scoped to balance) that still follows the layered structure and flags gaps.",
+      "files": [
+        "evals/files/leave-app"
+      ],
+      "assertions": [
+        "The report states the 12 day annual allowance with a reference to models.py",
+        "The report says pending requests do not reduce the remaining balance",
+        "The report says weekends are counted as leave days, or asks whether they should be",
+        "The coverage section states the scope was limited to leave balance"
+      ]
+    }
+  ]
+}

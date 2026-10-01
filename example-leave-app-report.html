@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leave Request Application: business flow</title>
+<style>
+:root{
+  --bg:#F3F5F7; --surface:#FFFFFF; --ink:#16222B; --muted:#52626E; --line:#D3DBE1;
+  --accent:#2F4BD8; --accent-soft:#E8ECFC;
+  --fact-fg:#10603A; --fact-bg:#DCF2E5; --inf-fg:#6F4400; --inf-bg:#FBE9C6; --unk-fg:#8A1B38; --unk-bg:#FBE1E8;
+  --code-bg:#EEF1F4;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0F161C; --surface:#17212A; --ink:#E6EDF2; --muted:#9FAEBA; --line:#2B3844;
+  --accent:#93A5FF; --accent-soft:#222C52;
+  --fact-fg:#8FE0B4; --fact-bg:#173A2A; --inf-fg:#F2CD86; --inf-bg:#43330F; --unk-fg:#F5A9BD; --unk-bg:#4A1A2A;
+  --code-bg:#1F2B35;
+}}
+*{box-sizing:border-box}
+html{scroll-padding-top:4.5rem}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--sans)}
+a{color:var(--accent)}
+header.top{background:var(--surface);border-bottom:1px solid var(--line)}
+.wrap{max-width:72rem;margin:0 auto;padding:0 1.25rem}
+header.top .wrap{padding-top:1.75rem;padding-bottom:.25rem}
+h1{font:600 clamp(1.7rem,3.2vw,2.5rem)/1.15 var(--serif);margin:0 0 .75rem;letter-spacing:-.01em}
+.lede{color:var(--muted);max-width:60ch;margin:0 0 1rem}
+.legend{display:flex;flex-wrap:wrap;gap:.35rem 1.25rem;margin:0 0 1rem;padding:0;list-style:none;font-size:.85rem;color:var(--muted)}
+.legend li{display:flex;gap:.45rem;align-items:center}
+nav[role=tablist]{display:flex;gap:.25rem;overflow-x:auto}
+[role=tab]{appearance:none;background:none;border:0;border-bottom:3px solid transparent;padding:.7rem 1rem;font:inherit;color:var(--muted);cursor:pointer;white-space:nowrap}
+[role=tab][aria-selected=true]{color:var(--ink);font-weight:600;border-bottom-color:var(--accent)}
+[role=tab]:hover{color:var(--ink)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:3px}
+main.wrap{padding-top:1.75rem;padding-bottom:4rem}
+.panel{display:grid;grid-template-columns:minmax(0,1fr) 13rem;gap:2.5rem;align-items:start}
+.panel:not(.active){position:absolute;left:-10000px;top:0;width:1000px;visibility:hidden;pointer-events:none}
+.panel.no-toc{grid-template-columns:minmax(0,1fr)}
+.toc{position:sticky;top:1rem;font-size:.9rem;border-left:2px solid var(--line);padding-left:1rem}
+.toc ol{margin:0;padding:0;list-style:none}
+.toc li+li{margin-top:.5rem}
+.toc a{color:var(--muted);text-decoration:none}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+.content>*:first-child{margin-top:0}
+h2{font:600 1.6rem/1.2 var(--serif);margin:0 0 1rem}
+h3{font:600 1.3rem/1.25 var(--serif);margin:0 0 .75rem}
+h4{font:600 1rem/1.3 var(--sans);margin:1.25rem 0 .5rem}
+section.flow{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:1.5rem 1.5rem 1.25rem;margin:0 0 1.75rem}
+section.plain{margin:0 0 1.75rem}
+p{margin:.6rem 0;max-width:68ch}
+ol,ul{max-width:68ch;padding-left:1.4rem}
+li{margin:.3rem 0}
+code{font:.88em var(--mono);background:var(--code-bg);padding:.1em .35em;border-radius:3px}
+code.ref{color:var(--accent);word-break:break-all}
+pre{background:var(--code-bg);padding:1rem;border-radius:4px;overflow-x:auto;font:.85rem/1.5 var(--mono)}
+pre code{background:none;padding:0}
+.tablewrap{overflow-x:auto;margin:.9rem 0}
+table{border-collapse:collapse;width:100%;font-size:.93rem}
+th,td{text-align:left;vertical-align:top;padding:.55rem .75rem;border-bottom:1px solid var(--line)}
+th{font-weight:600;color:var(--muted);border-bottom:2px solid var(--line);white-space:nowrap}
+td:first-child{white-space:nowrap;font-weight:600}
+.badge{display:inline-block;font:600 .72rem/1 var(--sans);letter-spacing:.02em;padding:.28rem .5rem;border-radius:3px;vertical-align:.08em}
+.fact{color:var(--fact-fg);background:var(--fact-bg)}
+.inferred{color:var(--inf-fg);background:var(--inf-bg)}
+.unknown{color:var(--unk-fg);background:var(--unk-bg)}
+figure.diagram{margin:1.1rem 0;padding:1rem;border:1px solid var(--line);border-radius:4px;background:var(--surface);overflow-x:auto}
+section.flow figure.diagram{background:var(--bg)}
+figure.diagram pre.mermaid{background:none;padding:0;margin:0;text-align:center;font-family:var(--sans);color:transparent;min-height:3rem}
+figure.diagram svg{max-width:100%;height:auto}
+body.no-mermaid figure.diagram pre.mermaid{color:var(--ink);text-align:left;font:.85rem/1.5 var(--mono);background:var(--code-bg);padding:1rem;white-space:pre}
+body.no-mermaid figure.diagram::before{content:attr(data-fallback);display:block;font-size:.85rem;color:var(--muted);margin-bottom:.5rem}
+blockquote{margin:1rem 0;padding:.25rem 1rem;border-left:3px solid var(--accent);color:var(--muted)}
+hr{border:0;border-top:1px solid var(--line);margin:1.5rem 0}
+@media (max-width:900px){.panel,.panel.no-toc{grid-template-columns:minmax(0,1fr)}.toc{position:static;border-left:0;padding-left:0;order:-1}.toc ol{display:flex;flex-wrap:wrap;gap:.25rem 1rem}.toc li+li{margin-top:0}}
+@media print{
+  header nav,.toc{display:none}
+  .panel,.panel:not(.active){position:static;visibility:visible;width:auto;display:block;pointer-events:auto}
+  body{background:#fff}
+  section.flow{break-inside:avoid-page}
+}
+</style>
+<noscript><style>.panel:not(.active){position:static;visibility:visible;width:auto;display:block}</style></noscript>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <h1>Leave Request Application: business flow</h1>
+    
+    <ul class="legend" aria-label="How to read the tags"><li><span class="badge fact">FACT</span>Verified in code</li><li><span class="badge inferred">INFERRED</span>Inferred, not enforced in code read</li><li><span class="badge unknown">UNKNOWN</span>Needs confirmation</li></ul>
+    <nav role="tablist" aria-label="Report sections"><button role="tab" id="tab-summary-btn" aria-controls="tab-summary" aria-selected="true" tabindex="0">Summary</button><button role="tab" id="tab-flows-btn" aria-controls="tab-flows" aria-selected="false" tabindex="-1">Flows</button><button role="tab" id="tab-technical-detail-btn" aria-controls="tab-technical-detail" aria-selected="false" tabindex="-1">Technical detail</button></nav>
+  </div>
+</header>
+<main class="wrap">
+<div class="panel active" role="tabpanel" id="tab-summary" aria-labelledby="tab-summary-btn"><div class="content"><h2>Summary</h2><p><strong>Purpose.</strong> Employees submit leave requests, managers or HR make approval decisions, and annual leave allowance is deducted once leave is approved.</p><p><strong>Actors.</strong> Employee (creates and submits requests); Direct Manager (approves or rejects); HR (decides on long leave and requests unhandled by managers); System (daily job that escalates stagnant requests).</p><section class="flow" id="the-journey-in-one-picture"><h3>The journey in one picture</h3><figure class="diagram" data-fallback="Diagram could not load (needs internet). Diagram source:"><pre class="mermaid">flowchart LR
+  subgraph Employee
+    K1[&quot;Create draft&quot;] --&gt; K2[&quot;Submit request&quot;]
+  end
+  subgraph Manager
+    A1[&quot;Make decision&quot;]
+  end
+  subgraph HR
+    H1[&quot;Decide on long leave&quot;]
+  end
+  subgraph System
+    S1[&quot;Auto-escalate after 5 days&quot;]
+  end
+  K2 --&gt; A1
+  A1 -- &quot;more than 3 days&quot; --&gt; H1
+  A1 -- &quot;3 days or fewer&quot; --&gt; Done[&quot;Approved, balance deducted&quot;]
+  H1 --&gt; Done
+  K2 -.-&gt; S1
+  S1 -.-&gt; H1</pre></figure></section><section class="flow" id="flows-at-a-glance"><h3>Flows at a glance</h3><div class="tablewrap"><table><thead><tr><th scope='col'>Flow</th><th scope='col'>Actor</th><th scope='col'>In one line</th></tr></thead><tbody><tr><td>Submit leave request</td><td>Employee</td><td>Draft is created and submitted if dates are valid and balance is sufficient</td></tr><tr><td>Decide on leave request</td><td>Manager, HR</td><td>Approve or reject; leave longer than 3 days must go through HR</td></tr><tr><td>Automatic escalation</td><td>System</td><td>Requests untouched by manager for more than 5 days are escalated to HR</td></tr></tbody></table></div><p><strong>Biggest open questions.</strong> Does the remaining balance intentionally ignore pending requests? Are weekends and holidays intentionally counted as leave days?</p></section></div><aside class="toc"><ol><li><a href="#the-journey-in-one-picture">The journey in one picture</a></li><li><a href="#flows-at-a-glance">Flows at a glance</a></li></ol></aside></div>
+<div class="panel" role="tabpanel" id="tab-flows" aria-labelledby="tab-flows-btn"><div class="content"><h2>Flows</h2><section class="flow" id="submit-leave-request"><h3>Submit leave request</h3><p><strong>Trigger.</strong> Employee creates a draft and clicks submit. <strong>Actor.</strong> Employee. <strong>Outcome.</strong> Request status is &quot;Pending manager approval&quot; and manager receives an email notification.</p><p><strong>Steps.</strong></p><ol><li>Employee enters start and end dates; system rejects if end date is earlier than start date. <span class="badge fact">FACT</span> <code class="ref">app.py:14-15</code></li><li>Request is saved as Draft. <span class="badge fact">FACT</span> <code class="ref">app.py:16-17</code></li><li>Employee submits; system checks ownership, Draft status, and balance. <span class="badge fact">FACT</span> <code class="ref">app.py:25-28</code></li><li>Status transitions to pending manager, submission time is recorded, manager receives email. <span class="badge fact">FACT</span> <code class="ref">app.py:29-32</code></li></ol><figure class="diagram" data-fallback="Diagram could not load (needs internet). Diagram source:"><pre class="mermaid">flowchart TD
+  Start[&quot;Employee enters dates&quot;] --&gt; V{&quot;Valid dates?&quot;}
+  V -- no --&gt; E1[&quot;Rejected: invalid dates&quot;]
+  V -- yes --&gt; D[&quot;Saved as Draft&quot;]
+  D --&gt; S[&quot;Employee submits&quot;]
+  S --&gt; B{&quot;Sufficient balance?&quot;}
+  B -- no --&gt; E2[&quot;Rejected: insufficient balance&quot;]
+  B -- yes --&gt; W[&quot;Pending manager; manager gets email&quot;]</pre></figure><p><strong>Business rules.</strong></p><div class="tablewrap"><table><thead><tr><th scope='col'>ID</th><th scope='col'>Rule</th><th scope='col'>Tag</th><th scope='col'>Evidence</th></tr></thead><tbody><tr><td>BR-01</td><td>End date cannot be earlier than start date.</td><td><span class="badge fact">FACT</span></td><td><code class="ref">app.py:14-15</code></td></tr><tr><td>BR-02</td><td>Total days are calculated using calendar days, including weekends and public holidays, from start to end date.</td><td><span class="badge fact">FACT</span></td><td><code class="ref">models.py:30-31</code></td></tr><tr><td>BR-03</td><td>Only the request owner can submit, and only from Draft status.</td><td><span class="badge fact">FACT</span></td><td><code class="ref">app.py:25-26</code></td></tr><tr><td>BR-04</td><td>Submission is rejected if requested days exceed remaining balance.</td><td><span class="badge fact">FACT</span></td><td><code class="ref">app.py:27-28</code></td></tr><tr><td>BR-05</td><td>Annual allowance is 12 days; remaining balance equals allowance minus approved leaves starting in the current year.</td><td><span class="badge fact">FACT</span></td><td><code class="ref">models.py:17</code>, <code class="ref">app.py:66-68</code></td></tr><tr><td>BR-06</td><td>Pending requests do not reduce remaining balance, and balance is not re-checked upon approval. Is this intentional?</td><td><span class="badge unknown">UNKNOWN</span></td><td><code class="ref">app.py:67</code></td></tr></tbody></table></div><p><strong>Failure and exceptions.</strong> Invalid dates and insufficient balance halt the process with an error response. Duplicate submission is prevented because only Draft requests can be submitted.</p></section><section class="flow" id="decide-on-leave-request"><h3>Decide on leave request</h3><p><strong>Trigger.</strong> Manager or HR clicks approve or reject. <strong>Actor.</strong> Direct Manager, HR. <strong>Outcome.</strong> Request is Approved, Rejected, or escalated to HR.</p><p><strong>Steps.</strong></p><ol><li>System verifies who is authorized to decide at current status. <span class="badge fact">FACT</span> <code class="ref">policies.py:6-14</code></li><li>If approved by manager and leave is longer than 3 days, status becomes &quot;Pending HR approval&quot; and HR receives email. <span class="badge fact">FACT</span> <code class="ref">app.py:42-44</code></li><li>Otherwise, status becomes Approved, approval timestamp is recorded, balance is deducted, and employee receives email. <span class="badge fact">FACT</span> <code class="ref">app.py:45-49</code></li><li>If rejected, status becomes Rejected and employee receives email containing reason (optional). <span class="badge fact">FACT</span> <code class="ref">app.py:60-62</code></li></ol><figure class="diagram" data-fallback="Diagram could not load (needs internet). Diagram source:"><pre class="mermaid">flowchart TD
+  P[&quot;Approver clicks approve&quot;] --&gt; C{&quot;Authorized to decide?&quot;}
+  C -- no --&gt; X[&quot;Rejected: unauthorized&quot;]
+  C -- yes --&gt; L{&quot;Manager and more than 3 days?&quot;}
+  L -- yes --&gt; HR[&quot;Escalate to HR; HR gets email&quot;]
+  L -- no --&gt; OK[&quot;Approved; balance deducted; employee gets email&quot;]</pre></figure><p><strong>Lifecycle of leave request.</strong> UI labels: Draft, Pending manager approval, Pending HR approval, Approved, Rejected. <span class="badge fact">FACT</span> <code class="ref">models.py:9-15</code></p><figure class="diagram" data-fallback="Diagram could not load (needs internet). Diagram source:"><pre class="mermaid">stateDiagram-v2
+  [*] --&gt; Draft
+  Draft --&gt; PendingManager: employee submits
+  PendingManager --&gt; Approved: manager approves, 3 days or fewer
+  PendingManager --&gt; PendingHR: manager approves over 3 days, or escalation job
+  PendingManager --&gt; Rejected: manager rejects
+  PendingHR --&gt; Approved: HR approves
+  PendingHR --&gt; Rejected: HR rejects
+  Approved --&gt; [*]
+  Rejected --&gt; [*]</pre></figure><p><strong>Business rules.</strong></p><div class="tablewrap"><table><thead><tr><th scope='col'>ID</th><th scope='col'>Rule</th><th scope='col'>Tag</th><th scope='col'>Evidence</th></tr></thead><tbody><tr><td>BR-07</td><td>No one may approve or reject their own leave request.</td><td><span class="badge fact">FACT</span></td><td><code class="ref">policies.py:8-9</code></td></tr><tr><td>BR-08</td><td>Under pending manager status, only the employee&#x27;s direct manager may decide.</td><td><span class="badge fact">FACT</span></td><td><code class="ref">policies.py:10-11</code></td></tr><tr><td>BR-09</td><td>Under pending HR status, only users with HR role may decide.</td><td><span class="badge fact">FACT</span></td><td><code class="ref">policies.py:12-13</code></td></tr><tr><td>BR-10</td><td>Leave exceeding 3 days is not final upon manager approval; HR approval is mandatory.</td><td><span class="badge fact">FACT</span></td><td><code class="ref">policies.py:3</code>, <code class="ref">policies.py:17-18</code>, <code class="ref">app.py:42-44</code></td></tr><tr><td>BR-11</td><td>Final approval records approval date and calls balance deduction.</td><td><span class="badge fact">FACT</span></td><td><code class="ref">app.py:45-48</code></td></tr><tr><td>BR-12</td><td>The balance deduction function implementation is absent from inspected code, even though remaining balance is calculated dynamically from Approved requests. Is balance stored redundantly, risking double deduction?</td><td><span class="badge unknown">UNKNOWN</span></td><td><code class="ref">app.py:48</code></td></tr><tr><td>BR-13</td><td>Rejection reason is optional.</td><td><span class="badge fact">FACT</span></td><td><code class="ref">app.py:62</code></td></tr></tbody></table></div><p><strong>Failure and exceptions.</strong> Unauthorized decision-makers receive access denial. There are no rules in code for cancelling an already approved request.</p></section><section class="flow" id="automatic-escalation-of-stagnant-requests"><h3>Automatic escalation of stagnant requests</h3><p><strong>Trigger.</strong> Scheduled job. <strong>Actor.</strong> System. <strong>Outcome.</strong> Requests pending manager approval for too long are escalated to HR.</p><p><strong>Steps.</strong></p><ol><li>Job finds requests in pending manager status submitted more than 5 days ago. <span class="badge fact">FACT</span> <code class="ref">jobs.py:12-13</code></li><li>Each matching request is updated to pending HR status and HR receives an email. <span class="badge fact">FACT</span> <code class="ref">jobs.py:14-15</code></li></ol><figure class="diagram" data-fallback="Diagram could not load (needs internet). Diagram source:"><pre class="mermaid">flowchart TD
+  T[&quot;Daily job runs&quot;] --&gt; Q{&quot;Pending manager for over 5 days?&quot;}
+  Q -- yes --&gt; E[&quot;Status changed to Pending HR&quot;]
+  E --&gt; M[&quot;HR receives email&quot;]
+  Q -- no --&gt; N[&quot;No changes&quot;]</pre></figure><p><strong>Business rules.</strong></p><div class="tablewrap"><table><thead><tr><th scope='col'>ID</th><th scope='col'>Rule</th><th scope='col'>Tag</th><th scope='col'>Evidence</th></tr></thead><tbody><tr><td>BR-14</td><td>Escalation threshold is 5 calendar days since submission timestamp.</td><td><span class="badge fact">FACT</span></td><td><code class="ref">jobs.py:6</code>, <code class="ref">jobs.py:12-13</code></td></tr><tr><td>BR-15</td><td>Job runs daily.</td><td><span class="badge inferred">INFERRED</span></td><td>Inferred solely from docstring in <code class="ref">jobs.py:11</code>; schedule configuration was not found in examined code</td></tr><tr><td>BR-16</td><td>Does the manager receive a reminder before escalation, and is the employee notified upon escalation?</td><td><span class="badge unknown">UNKNOWN</span></td><td><code class="ref">jobs.py:15</code></td></tr></tbody></table></div><p><strong>Failure and exceptions.</strong> The job sends an email only to HR; neither manager nor employee is notified by this code path.</p></section></div><aside class="toc"><ol><li><a href="#submit-leave-request">Submit leave request</a></li><li><a href="#decide-on-leave-request">Decide on leave request</a></li><li><a href="#automatic-escalation-of-stagnant-requests">Automatic escalation of stagnant requests</a></li></ol></aside></div>
+<div class="panel" role="tabpanel" id="tab-technical-detail" aria-labelledby="tab-technical-detail-btn"><div class="content"><h2>Technical detail</h2><section class="flow" id="coverage"><h3>Coverage</h3><p>Inspected: <code>app.py</code>, <code>models.py</code>, <code>policies.py</code>, <code>jobs.py</code>, <code>notifications.py</code>, <code>templates/leave_list.html</code>. Not found in repository: Celery schedule configuration, database migrations, automated tests, and definitions for <code>login_required</code>, <code>hr_inbox</code>, <code>deduct_balance</code>. The <code>.env</code> file was deliberately excluded from analysis.</p></section><section class="flow" id="entities"><h3>Entities</h3><div class="tablewrap"><table><thead><tr><th scope='col'>Entity</th><th scope='col'>Business meaning</th><th scope='col'>Key states or fields</th><th scope='col'>Evidence</th></tr></thead><tbody><tr><td>Leave request</td><td>A single leave request submitted by an employee</td><td>status, submitted_at, approved_at</td><td><code class="ref">models.py:20</code></td></tr></tbody></table></div></section><section class="flow" id="integrations-and-automatic-work"><h3>Integrations and automatic work</h3><div class="tablewrap"><table><thead><tr><th scope='col'>What</th><th scope='col'>Trigger</th><th scope='col'>Effect</th><th scope='col'>Evidence</th></tr></thead><tbody><tr><td>SMTP Email</td><td>Submit, approve, reject, escalate</td><td>Notifies manager, HR, or employee</td><td><code class="ref">notifications.py:4-6</code></td></tr><tr><td>Escalation job</td><td>Scheduled (schedule not found in code)</td><td>Escalates stagnant requests to HR</td><td><code class="ref">jobs.py:9-10</code></td></tr></tbody></table></div></section><section class="flow" id="open-questions"><h3>Open questions</h3><ol><li>Should pending leave requests reserve allowance from the remaining balance? <span class="badge unknown">UNKNOWN</span></li><li>Should weekends and public holidays be excluded from leave day count? <span class="badge unknown">UNKNOWN</span></li><li>Where is balance actually deducted, and is there double-deduction risk? <span class="badge unknown">UNKNOWN</span></li><li>Who should be notified when the escalation job moves a request? <span class="badge unknown">UNKNOWN</span></li></ol></section></div><aside class="toc"><ol><li><a href="#coverage">Coverage</a></li><li><a href="#entities">Entities</a></li><li><a href="#integrations-and-automatic-work">Integrations and automatic work</a></li><li><a href="#open-questions">Open questions</a></li></ol></aside></div>
+</main>
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('[role=tab]'));
+  var panels=[].slice.call(document.querySelectorAll('[role=tabpanel]'));
+  function select(i,focus){
+    tabs.forEach(function(t,k){var on=k===i;t.setAttribute('aria-selected',on?'true':'false');t.tabIndex=on?0:-1;panels[k].classList.toggle('active',on);});
+    if(focus){tabs[i].focus();}
+  }
+  tabs.forEach(function(t,i){
+    t.addEventListener('click',function(){select(i);});
+    t.addEventListener('keydown',function(e){
+      var n=i;
+      if(e.key==='ArrowRight'){n=(i+1)%tabs.length;}
+      else if(e.key==='ArrowLeft'){n=(i-1+tabs.length)%tabs.length;}
+      else if(e.key==='Home'){n=0;}
+      else if(e.key==='End'){n=tabs.length-1;}
+      else{return;}
+      e.preventDefault();select(n,true);
+    });
+  });
+  var start=0,h=decodeURIComponent(location.hash.slice(1)),target=h?document.getElementById(h):null;
+  if(target){panels.forEach(function(p,i){if(p===target||p.contains(target)){start=i;}});}
+  select(start);
+  var s=document.createElement('script');
+  s.src='https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js';
+  s.onerror=function(){document.body.classList.add('no-mermaid');};
+  s.onload=function(){
+    var dark=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches;
+    mermaid.initialize({startOnLoad:false,securityLevel:'strict',theme:'base',themeVariables:dark?
+      {fontFamily:'system-ui,sans-serif',primaryColor:'#222C52',primaryTextColor:'#E6EDF2',primaryBorderColor:'#93A5FF',lineColor:'#9FAEBA',secondaryColor:'#173A2A',tertiaryColor:'#17212A'}:
+      {fontFamily:'system-ui,sans-serif',primaryColor:'#E8ECFC',primaryTextColor:'#16222B',primaryBorderColor:'#2F4BD8',lineColor:'#52626E',secondaryColor:'#DCF2E5',tertiaryColor:'#FFFFFF'}});
+    mermaid.run({querySelector:'pre.mermaid',suppressErrors:true}).catch(function(){document.body.classList.add('no-mermaid');});
+  };
+  document.head.appendChild(s);
+})();
+</script>
+</body>
+</html>

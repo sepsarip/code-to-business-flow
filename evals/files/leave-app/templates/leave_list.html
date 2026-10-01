@@ -1,0 +1,2 @@
+<h1>My leave requests</h1>
+{% for l in leaves %}<li>{{ l.start }} to {{ l.end }}: {{ status_labels[l.status] }}</li>{% endfor %}
