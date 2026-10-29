@@ -1,5 +1,10 @@
 # Code to Business Flow
 
+> [!WARNING]
+> **DEPRECATED / UNMAINTAINED**  
+> This repository is deprecated and no longer actively maintained.  
+> Please refer to [**sepsarip/agent-skills**](https://github.com/sepsarip/agent-skills) for the latest updates and active development.
+
 > An AI agent skill and toolkit to reverse-engineer source code into verifiable business flows, user journeys, status lifecycles, and business rules with diagrams.
 
 ---
